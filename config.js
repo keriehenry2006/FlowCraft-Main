@@ -16,11 +16,7 @@ const FlowCraftConfig = {
         // These should be loaded from environment variables or a secure config service
         // For now, we'll use a more secure approach than hardcoding in each file
         url: window.FLOWCRAFT_SUPABASE_URL || 'https://hbwnghrfhyikcywixjqn.supabase.co',
-<<<<<<< HEAD
         anonKey: window.FLOWCRAFT_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhid25naHJmaHlpa2N5d2l4anFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc0MjkzMjAsImV4cCI6MjA1MzAwNTMyMH0.HJmaHlpa2NSd2l4anruIjmTcmZs6ZSI6ImFub241ICJpYXQiOjE3Mzc0MjkzMjAsImV4cCI6MjA1MzAwNTMyMH0.1OEcWblDku7LlmfsEzF0j39rkyFhcJQWEm6TsFpNv2w'
-=======
-        anonKey: window.FLOWCRAFT_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhid25naHJmaHlpa2N5d2l4anFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyMjE4MzMsImV4cCI6MjA2Njc5NzgzM30.IOEcWblDku7LlmfsEzF0j39rkyFhcJQWEm6TsFpNv2w'
->>>>>>> d7828bd816f8c39be60de5ba12b91856446e36ce
     },
     
     // Security Settings
