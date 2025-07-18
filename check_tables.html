@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sprawdź tabele w Supabase</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Sprawdź tabele w projekcie Supabase</h1>
+    <button onclick="checkTables()">Sprawdź tabele</button>
+    <div id="result"></div>
+
+    <script>
+        async function checkTables() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Sprawdzanie tabel...';
+            
+            try {
+                const config = window.FlowCraftSecurity.getSupabaseConfig();
+                const { createClient } = supabase;
+                const client = createClient(config.url, config.anonKey);
+                
+                let html = '<h2>Wyniki sprawdzenia:</h2>';
+                
+                // Lista tabel do sprawdzenia
+                const tablesToCheck = [
+                    'users',
+                    'projects', 
+                    'project_collaborators',
+                    'diagrams',
+                    'diagram_elements',
+                    'diagram_connections',
+                    'invitations',
+                    'user_profiles'
+                ];
+                
+                html += '<table><tr><th>Tabela</th><th>Status</th><th>Liczba rekordów</th><th>Błąd</th></tr>';
+                
+                for (const tableName of tablesToCheck) {
+                    try {
+                        const { data, error, count } = await client
+                            .from(tableName)
+                            .select('*', { count: 'exact' })
+                            .limit(1);
+                        
+                        if (error) {
+                            html += `<tr><td>${tableName}</td><td style="color: red;">❌ Błąd</td><td>-</td><td>${error.message}</td></tr>`;
+                        } else {
+                            html += `<tr><td>${tableName}</td><td style="color: green;">✅ OK</td><td>${count || 0}</td><td>-</td></tr>`;
+                        }
+                    } catch (err) {
+                        html += `<tr><td>${tableName}</td><td style="color: red;">❌ Błąd</td><td>-</td><td>${err.message}</td></tr>`;
+                    }
+                }
+                
+                html += '</table>';
+                
+                // Sprawdź też tabele systemowe
+                html += '<h3>Sprawdzenie tabel systemowych:</h3>';
+                html += '<table><tr><th>Tabela systemowa</th><th>Status</th><th>Informacje</th></tr>';
+                
+                try {
+                    const { data: authData, error: authError } = await client.auth.getSession();
+                    html += `<tr><td>auth.users</td><td style="color: ${authError ? 'red' : 'green'};">${authError ? '❌' : '✅'}</td><td>${authError ? authError.message : 'Sesja: ' + (authData.session ? 'aktywna' : 'brak')}</td></tr>`;
+                } catch (err) {
+                    html += `<tr><td>auth.users</td><td style="color: red;">❌</td><td>${err.message}</td></tr>`;
+                }
+                
+                html += '</table>';
+                
+                result.innerHTML = html;
+                
+            } catch (error) {
+                result.innerHTML = `<div class="result error">Błąd połączenia: ${error.message}</div>`;
+            }
+        }
+        
+        // Automatyczne sprawdzenie przy ładowaniu
+        window.onload = function() {
+            checkTables();
+        };
+    </script>
+</body>
+</html>
